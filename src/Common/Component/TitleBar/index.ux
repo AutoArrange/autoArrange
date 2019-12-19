@@ -1,0 +1,92 @@
+<template>
+    <div class="titleBar">
+        <div class="titleBar-decoration"></div>
+        <div class="titleBar-section">
+            <img class="titleBar-menuIcon" src="{{menuIcon}}" @click="toggle()"></img>
+
+            <text class="titleBar-title"><span>{{title}}</span></text>
+            <img class="titleBar-shareIcon" src="{{shareIcon}}" @click="toggle()"></img>
+            <img class="titleBar-moreIcon" src="{{moreIcon}}" @click="toggle()"></img>
+        </div>
+        
+        <dropdown show={{menuShow}}></dropdown>
+        
+    </div>
+</template>
+
+ <import name="dropdown" src="../DropDown"></import>
+  
+
+<script>
+
+export default 
+{
+    data: 
+    {
+        menuIcon: '../Common/Image/menu.png',
+        shareIcon: '../Common/Image/share.png',
+        moreIcon: '../Common/Image/more.png',
+        title: 'Auto Arrange',
+        menuShow: false
+    },
+    toggle()
+    {
+        this.menuShow = !this.menuShow
+    }
+}
+</script>
+
+
+<style>
+    .titleBar
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    .titleBar-decoration
+    {
+        background-color: #3700B3;
+        width: 100%;
+        height: 24px;
+    }
+    .titleBar-section
+    {
+        background-color: #6200EE;
+        width: 100%;
+        height: 56px;
+    }
+    .titleBar-title
+    {
+        font-family: 'Roboto Medium', 'Roboto';
+        font-weight: 500;
+        font-style: normal;
+        font-size: 20px;
+        color: #FFFFFF;
+        text-align: left;
+        margin-left: 20px;
+    }
+    .titleBar-menuIcon
+    {
+        border-width: 0px;
+        margin-left: 16px;
+        margin-top: 18px;
+        width: 24px;
+        height: 24px;
+    }
+    .titleBar-shareIcon
+    {
+        border-width: 0px;
+        margin-left: 110px;
+        margin-top: 18px;
+        width: 24px;
+        height: 24px;
+    }
+    .titleBar-moreIcon
+    {
+        border-width: 0px;
+        margin-left: 16px;
+        margin-top: 18px;
+        width: 24px;
+        height: 24px;
+    }
+</style>

@@ -1,0 +1,159 @@
+<template>
+  <div class="me-page">
+      <div class="me" if="{{isLogin}}">
+        <stack class="header">
+          <text class="username">{{ loginData.username }}</text>
+        </stack>
+        <div class="item-title"></div>
+        <text class="item border-bottom" onclick="">个人资料</text>
+        <text class="item" onclick="">参与的活动</text>
+        <div class="item-title"></div>
+        <text class="item border-bottom" onclick="createShortcut">创建桌面图标</text>
+        <div class="item-title"></div>
+        <text class="item border-bottom" onclick="openDialog">退出登录</text>
+      </div>
+      <login elif="{{ view === 'login' }}" ontoview="toView" onsuccess="loginSuccess"></login>
+      <register elif="{{ view === 'register' }}" ontoview="toView" onsuccess="registerSuccess"></register>
+      <c-dialog title="提示" visible="{{ showDialog }}" onclose="onClose" message="确认退出登录？" onclick="onClick" btn-list="{{ dialogBtn }}"></c-dialog>
+  </div>
+</template>
+
+<import name="login" src="../Auth/login"></import>
+<import name="register" src="../Auth/register"></import>
+<import name="c-dialog" src="../Common/Component/CDialog/dialog"></import>
+
+<script>
+
+export default {
+  data() {
+    return {
+      isLogin: false,
+      view: 'login',
+      loginData: {},
+      showDialog: false,
+      dialogBtn: [
+        {
+          label: '退出'
+        }, 
+        {
+          label: '取消'
+        }
+      ]
+    }
+  },
+  onInit() {
+    this.$app.$def.storage.get({
+      key: 'info',
+      success: function(data) {
+        this.loginData = {}
+        if(data != '') {
+          this.loginData = JSON.parse(data)
+        }
+      }.bind(this),
+      fail: function(data, code) {
+        this.loginData = {}
+      }.bind(this)
+    })
+    this.$app.$def.storage.get({
+      key: 'isLogin',
+      success: function(data) {
+        this.isLogin = data === 'true' ? true : false
+      }.bind(this),
+      fail: function(data, code) {
+        this.isLogin = false
+      }.bind(this)
+    })
+  },
+  toView({ detail: { view } }) {
+    this.view = view
+  },
+  loginSuccess({ detail: { data } }) {
+    this.isLogin = true
+    this.loginData = data.info
+    
+    if(data.msg)
+      this.$app.$def.prompt.showToast({ message: data.msg })
+  },
+  registerSuccess({ detail: { data } }) {
+    this.isLogin = true
+    this.loginData = data.info
+    console.info(this.loginData)
+
+    if(data.msg)
+      this.$app.$def.prompt.showToast({ message: data.msg })
+  },
+  signout() {
+    this.isLogin = false
+    this.view = 'login'
+    this.$app.$def.storage.delete({
+      key: 'token'
+    })
+    this.$app.$def.storage.delete({
+      key: 'info'
+    })
+    this.$app.$def.storage.set({
+      key: 'isLogin',
+      value: 'false'
+    })
+  },
+  openDialog () {
+    this.showDialog = true
+  },
+  onClose () {
+    this.showDialog = false
+  },
+  onClick ({ detail: { idx } }) {
+    if(idx === 0) {
+      this.signout()
+    }
+  },
+  createShortcut () {
+    this.$app.$def.createShortcut()
+  }
+}
+</script>
+
+<style>
+.me {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+}
+
+.username {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 26px;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.header-email {
+  height: 30px;
+  color: #999999
+}
+
+.item-title {
+  width: 100%;
+  height: 15px;
+  background-color: #dddddd;
+  color: #ffffff;
+}
+
+.item {
+  width: 100%;
+  padding: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.border-bottom {
+  border-bottom-width: 1px;
+  border-bottom-color: #eeeeee;
+}
+</style>

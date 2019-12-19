@@ -1,0 +1,56 @@
+<template>
+    <div class="autoArrange-page">
+      <titleBar></titleBar>
+      <div class="autoArrange-display">
+        <!-- <home if="{{this.activePage[0].show}}"></home>
+        <classify if="{{this.activePage[1].show}}"></classify> -->
+        <user if="{{this.activePage[2].show}}"></user>
+      </div>
+      <navBar></navBar>
+    </div>
+</template>
+
+<!-- <import name="home" src="../Home/index"></import>
+<import name="classify" src="../Classify/index"></import> -->
+<import name="user" src="../User/index"></import>
+<import name="titleBar" src="../Common/component/TitleBar"></import>
+<import name="navBar" src="../Common/component/NavBar"></import>
+
+
+  
+<script>
+
+export default 
+{
+    data:
+    {
+        activePage: [{show: true}, {show: false}, {show: false}]
+    },
+    onInit() 
+    {
+        this.$on('changePage', this.changePage)
+    },
+    changePage(event)
+    {
+        for(let id in this.activePage)
+            this.activePage[id].show = false
+        this.activePage[event.detail.index].show = true
+        
+        console.info(this.activePage)
+    }
+}
+
+</script>
+  
+<style>
+.autoArrange-page
+{
+    display: flex;
+    flex-direction: column;
+}
+.autoArrange-display
+{
+    height: 584px;
+}
+</style>
+  

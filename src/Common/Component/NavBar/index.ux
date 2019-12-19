@@ -1,0 +1,203 @@
+<template>
+    <div class="navBar">
+
+        <div id="mask" show={{show}} @click="cancel()"></div>
+
+        <div class="navBar-create">
+            <block if="{{show}}" for="elements">
+                <list>
+                    <list-item class="navBar-create-block" type="btn" @click="this.$emit($item.text, {})">
+                        <img class="navBar-create-icon" src="{{$item.icon}}"></img>
+                        <text  class="navBar-create-text">{{$item.text}}</text>
+                    </list-item>
+                </list>
+            </block>
+        </div>
+
+        <div class="navBar-section">
+            <img class="navBar-logo" src="{{logo}}"></img>
+            <img class="navBar-nearby" src="{{nearby[currentIndex === 0 ? 1 : 0]}}" @click="changeCurrent(0)"></img>
+            <img class="navBar-message" src="{{message[currentIndex === 1 ? 1 : 0]}}" @click="changeCurrent(1)"></img>
+            <img class="navBar-user" src="{{user[currentIndex === 2 ? 1 : 0]}}" @click="changeCurrent(2)"></img>
+        </div>
+        <div class="navBar-createIcon">
+            <img class="navBar-circle" src="{{circle}}" @click="create()"></img>
+            <img class="navBar-plus" src="{{plus}}" @click="create()"></img>
+        </div>
+    </div>
+</template>
+
+<script>
+
+const barcode = require('@system.barcode')
+export default 
+{
+    data: 
+    {
+        logo: '../Common/Image/logo.png',
+        nearby: ['../Common/Image/home.png', '../Common/Image/home_selected.png'],
+        message: ['../Common/Image/message.png', '../Common/Image/message_selected.png'],
+        user: ['../Common/Image/user.png', '../Common/Image/user_selected.png'],
+        circle: '../Common/Image/circle.png',
+        plus: '../Common/Image/plus.png',
+        mask: '../Common/Image/mask.png',
+        currentIndex: 0,
+        show: false,
+        elements: [
+            {
+                text: '扫一扫',
+                icon: '../Common/Image/scan.png',
+                // handler: this.scan
+            },
+            {
+                text: '发布海报',
+                icon: '../Common/Image/upload.png',
+                // handler: this.scan()
+            },
+            {
+                text: '发布通知',
+                icon: '../Common/Image/notification.png',
+                // handler: this.scan()
+            }
+
+        ]
+    },
+    onInit() 
+    {
+        this.$on('扫一扫', this.scan)
+    },
+    
+    changeCurrent(index)
+    {
+        this.currentIndex = index
+        this.$dispatch('changePage', {index: index})
+    },
+
+    create()
+    {
+        this.show = true
+
+    },
+    cancel()
+    {
+        this.show = false
+    },
+    scan()
+    {
+        this.cancel()
+        barcode.scan(
+        {
+            success: function(data) 
+            {
+                return data.result
+            },
+            fail: function(data, code)
+            {
+                return code
+            }
+        })
+    }
+}
+</script>
+
+
+<style>
+    #mask
+    {
+        position:fixed;
+        top     : 0;
+        left    : 0;
+        bottom  : 0;
+        right   : 0;
+        background-color:#000000;
+        opacity: 0.6;
+        width: 100%;
+        height: 100%;
+    }
+    .navBar
+    {
+        background-color: #6200EE;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 56px;
+    }
+    .navBar-logo
+    {
+        border-width: 0px;
+        margin-left: 30px;
+        margin-top: 16px;
+        width: 24px;
+        height: 24px;
+    }
+    .navBar-nearby
+    {
+        border-width: 0px;
+        margin-left: 40px;
+        margin-top: 16px;
+        width: 24px;
+        height: 22px;
+    }
+    .navBar-message
+    {
+        border-width: 0px;
+        margin-left: 126px;
+        margin-top: 16px;
+        width: 24px;
+        height: 24px;
+    }
+    .navBar-user
+    {
+        border-width: 0px;
+        margin-left: 40px;
+        margin-top: 16px;
+        width: 24px;
+        height: 24px;
+    }
+    .navBar-circle
+    {
+        position: fixed;
+        width: 56px;
+        height: 56px;
+        left: 152px;
+        top: 636px;
+    }
+    .navBar-plus
+    {
+        position: fixed;
+        width: 24px;
+        height: 24px;
+        left: 168px;
+        top: 652px;
+    }
+    .navBar-create
+    {
+        /* background-color: rgba(172, 172, 172, 0.9); */
+        /* background-color: rgba(108, 0, 196, 0.8); */
+
+        background-color: rgba(90, 175, 201, 0.8);
+        
+        position: fixed;
+        top: 450px;
+        width: 100%;
+    }
+    .navBar-create-block
+    {
+        flex-direction: column;
+        align-items: center;
+        /* background-color: rgb(108, 0, 196); */
+        /* border-radius: 100px; */
+        padding-top: 30px;
+    }
+    .navBar-create-icon
+    {
+        width: 40px;
+        height: 40px;
+    }
+    .navBar-create-text
+    {
+        color: rgb(80, 80, 80);
+        font-size: 10px;
+        font-weight: 800;
+    }
+</style>

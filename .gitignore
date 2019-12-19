@@ -1,0 +1,10 @@
+node_modules
+build
+dist
+sign
+package-lock.json
+.eslintrc.json
+.ide
+.idea
+.vscode
+backup
